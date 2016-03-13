@@ -1,0 +1,42 @@
+[
+  {
+    "class": "bodypump",
+    "view": "BODYPUMP"
+  },
+  {
+    "class": "bodycombat",
+    "view": "BODYCOMBAT"
+  },
+  {
+    "class": "bodystep",
+    "view": "BODYSTEP"
+  },
+  {
+    "class": "bodyattack",
+    "view": "BODYATTACK"
+  },
+  {
+    "class": "bodybalance",
+    "view": "BODYBALANCE"
+  },
+  {
+    "class": "rpm",
+    "view": "RPM"
+  },
+  {
+    "class": "bodyjam",
+    "view": "BODYJAM"
+  },
+  {
+    "class": "bodyvive",
+    "view": "BODYVIVE"
+  },
+  {
+    "class": "shbam",
+    "view": "SH'BAM"
+  },
+  {
+    "class": "cxworx",
+    "view": "CXWORX"
+  }
+]

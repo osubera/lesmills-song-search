@@ -1,0 +1,42 @@
+[
+  {
+    "class": "bodypump",
+    "view": "ボディパンプ"
+  },
+  {
+    "class": "bodycombat",
+    "view": "ボディコンバット"
+  },
+  {
+    "class": "bodystep",
+    "view": "ボディステップ"
+  },
+  {
+    "class": "bodyattack",
+    "view": "ボディアタック"
+  },
+  {
+    "class": "bodybalance",
+    "view": "ボディバランス"
+  },
+  {
+    "class": "rpm",
+    "view": "RPM"
+  },
+  {
+    "class": "bodyjam",
+    "view": "ボディジャム"
+  },
+  {
+    "class": "bodyvive",
+    "view": "ボディバイブ"
+  },
+  {
+    "class": "shbam",
+    "view": "シバム"
+  },
+  {
+    "class": "cxworx",
+    "view": "シーエクスワークス"
+  }
+]
