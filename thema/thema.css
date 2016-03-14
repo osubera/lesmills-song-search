@@ -1,0 +1,11 @@
+header, section, footer, main {
+  display: block;
+}
+
+/*
+footer {
+  position: fixed; 
+  bottom: 1rem; 
+  right: 1rem; 
+}
+*/

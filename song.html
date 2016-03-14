@@ -1,45 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
-<meta charset="shift-jis">
+<meta charset="shift_jis">
 <title>LesMills Song Search</title>
-<script src="jquery-2.2.1.js"></script>
+<script src="jquery-2.2.1.min.js"></script>
 <script src="search.js"></script>
-<link rel="stylesheet" type="text/css" href="thema.css" />
+<link rel="stylesheet" type="text/css" href="thema/thema.css" />
 </head>
 <body>
 <header>
 <h1>LesMills Song Search</h1>
 </header>
 
-<nav>
+<section>
 <form>
 <select id="class" name="class">
-<option selected="selected" value="">選択してください▼</option>
+<option selected="selected" value="">種目を選ぶ ▼</option>
 </select>
 
 <select id="choreo" name="choreo">
-<option selected="selected" value="">選択してください▼</option>
+<option selected="selected" value="">コリオ番号を選ぶ ▼</option>
 </select>
 
 <select id="order" name="order">
-<option selected="selected" value="">選択してください▼</option>
+<option selected="selected" value="">曲順を選ぶ ▼</option>
 </select>
 </form>
-</nav>
-
-<section>
-<div id="main">
-<div id="criteria"></div>
-<table>
-<thead>
-</thead>
-<tbody id="result"></tbody>
-</table>
-</div>
+<div><span id="criteria"></span><span id="filename"></span></div>
+<div id="error"></div>
 </section>
 
+<main>
+<table>
+<thead id="result-head"></thead>
+<tbody id="result"></tbody>
+</table>
+</main>
+
 <footer>
+<span><a href="https://github.com/osubera/lesmills-song-search">available at github. </a></span>
 </footer>
 </body>
 </html>

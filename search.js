@@ -1,15 +1,51 @@
 $(document).ready(function(){
 
+  function showCriteriaMessage(msg) {
+    $("#criteria").text(msg);
+  }
+  
+  function clearCriteriaMessage() {
+    showCriteriaMessage("");
+  }
+  
+  function showFileNameMessage(msg) {
+    $("#filename").text(msg);
+  }
+  
+  function clearFileNameMessage() {
+    showFileNameMessage("");
+  }
+  
+  function showErrorMessage(msg) {
+    $("#error").text(msg);
+  }
+  
+  function clearErrorMessage() {
+    showErrorMessage("");
+  }
+  
+  function clearResultHead() {
+    $("#result-head").html("");
+  }
+  
+  function clearResult() {
+    $("#result").html("");
+  }
+  
+  function loadTexts() {
+  }
+  
   function setupClassSelector() {
     $.ajax({
       dataType: "json",
       url: "json/index-class.txt",
-      mimeType: "text/plain; charset=shift_jis",
-      success: function(result){
-        $.each(result, function(i, val){
-          $("#class").append('<option value="' + val['class'] +'">' + val['view'] + '</option>');
-        });
-      }
+      mimeType: "text/plain; charset=shift_jis"
+    }).done(function(result){
+      $.each(result, function(i, val){
+        $("#class").append('<option value="' + val['class'] +'">' + val['view'] + '</option>');
+      });
+    }).fail(function(xhr, ajaxOptions, thrownError){
+      showErrorMessage(xhr.status + " / " + thrownError);
     });
     $("#choreo").prop("disabled", true);
     $("#order").prop("disabled", true);
@@ -35,12 +71,13 @@ $(document).ready(function(){
     $.ajax({
       dataType: "json",
       url: url,
-      mimeType: "text/plain; charset=shift_jis",
-      success: function(result){
-        $.each(result, function(i, val){
-          $(selector).append('<option value="' + val +'">' + val + '</option>');
-        });
-      }
+      mimeType: "text/plain; charset=shift_jis"
+    }).done(function(result){
+      $.each(result, function(i, val){
+        $(selector).append('<option value="' + val +'">' + val + '</option>');
+      });
+    }).fail(function(xhr, ajaxOptions, thrownError){
+      showErrorMessage(xhr.status + " / " + thrownError);
     });
   }
   
@@ -62,35 +99,34 @@ $(document).ready(function(){
     }
   }
   
-  function clearResultTable() {
-    $("#criteria").text("");
-    $("#result").html("");
-  }
-  
   function makeFileName(key, choreo) {
-    "json/" + key + "/" + choreo.toLowerCase();
+    return("json/" + key + "/" + choreo.toLowerCase().replace(/Å_W/g, "") + ".txt");
   }
   
   function appendResultTable(key, choreo, order) {
+    var filename = makeFileName(key, choreo);
+    showFileNameMessage(filename);
     $.ajax({
       dataType: "json",
-      url: makeFileName(key, choreo),
-      mimeType: "text/plain; charset=shift_jis",
-      success: function(result){
-        $.each(result, function(i, val){
-          $("#class").append('<option value="' + val['class'] +'">' + val['view'] + '</option>');
-        });
-      }
+      url: filename,
+      mimeType: "text/plain; charset=shift_jis"
+    }).done(function(result){
+      $.each(result, function(i, val){
+        $("#result").append("<tr><td>" + val["order"] +"</td><td>" + val["song"] +"</td><td>" + val["artist"] + "</td></tr>");
+      });
+    }).fail(function(xhr, ajaxOptions, thrownError){
+      showErrorMessage(xhr.status + " / " + thrownError);
     });
   }
   
   function searchSongsByChoreo(choreo) {
-    clearResultTable();
+    clearCriteriaMessage();
+    clearResult();
     if(choreo != "") {
       var key = $("#class").val();
       var view = $("#class option:selected").text();
       //$("#criteria").append(key + view + choreo);
-      $("#criteria").text(view + " " + choreo);
+      showCriteriaMessage(view + " " + choreo);
       appendResultTable(key, choreo, "");
     }
   }
@@ -100,7 +136,8 @@ $(document).ready(function(){
   
   $("#class").change(function(){
     var selected = $(this).val();
-    clearResultTable();
+    clearCriteriaMessage();
+    clearResult();
     resetChoreoSelector();
     setupChoreoSelector(selected);
     resetOrderSelector();
@@ -116,7 +153,8 @@ $(document).ready(function(){
     var selected = $(this).val();
     searchSongsByOrder(selected);
   });
-
+  
+  var txt = loadTexts();
   setupClassSelector();
 
 });
