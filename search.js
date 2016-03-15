@@ -1,5 +1,9 @@
+// LesMills Song Search
+// https://github.com/osubera/lesmills-song-search
+
 $(document).ready(function(){
 
+// DOM helpers
   function showCriteriaMessage(msg) {
     $("#criteria").text(msg);
   }
@@ -32,7 +36,52 @@ $(document).ready(function(){
     $("#result").html("");
   }
   
+  // ajax common parameters to read json
+  var commonParams = {
+      dataType: "json",
+      mimeType: "text/plain; charset=shift_jis"
+  }
+  
+  // Satatic files
+  var fileText = "json/index-text.txt";
+  var fileClass = "json/index-class.txt";
+  
+  // Text data
+  var txt = {};
+  
+  // Multi-language text data
   function loadTexts() {
+    showFileNameMessage(fileText);
+    //$.ajax(fileText, $.extend({}, commonParams, {context: { hage: "hoge"}})
+    $.ajax(fileText, commonParams
+    ).done(function(result){
+      txt = result;  // async load to outer scope
+      //txt = this.hage;
+      /*
+    }).fail(function(xhr, ajaxOptions, thrownError){
+      if(xhr.status != 200) { // Access to restricted URI denied
+        showErrorMessage("no files");
+      } else if(ajaxOptions == "parsererror") { // JSON.parse error
+        showErrorMessage("invalid json");
+      } else {
+        showErrorMessage(xhr.status + " / " + thrownError);
+      }
+      */
+      }).fail(failMessageHandler
+    );
+  }
+  
+  // ajax error handler
+  function failMessageHandler(xhr, ajaxOptions, thrownError) {
+    var msg = xhr.status + " / " + thrownError;
+    var x;
+    if(xhr.status != 200) { // Access to restricted URI denied
+      x = txt["nofiles"];
+    } else if(ajaxOptions == "parsererror") { // JSON.parse error
+      x = txt["invalid"];
+    }
+    if(x) {msg = x; }
+    showErrorMessage(msg);
   }
   
   function setupClassSelector() {
@@ -154,7 +203,7 @@ $(document).ready(function(){
     searchSongsByOrder(selected);
   });
   
-  var txt = loadTexts();
+  loadTexts();
   setupClassSelector();
 
 });
