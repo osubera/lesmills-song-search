@@ -3,13 +3,21 @@
 
 $(document).ready(function(){
 
-// DOM helpers
-  function showCriteriaMessage(msg) {
-    $("#criteria").text(msg);
+/*############################
+DOM helpers
+############################*/
+
+  function showCriteria1Message(msg) {
+    $("#criteria1").text(msg);
+  }
+  
+  function showCriteria2Message(msg) {
+    $("#criteria2").text(msg);
   }
   
   function clearCriteriaMessage() {
-    showCriteriaMessage("");
+    showCriteria1Message("");
+    showCriteria2Message("");
   }
   
   function showFileNameMessage(msg) {
@@ -28,18 +36,50 @@ $(document).ready(function(){
     showErrorMessage("");
   }
   
-  function clearResultHead() {
-    $("#result-head").html("");
-  }
-  
   function clearResult() {
     $("#result").html("");
   }
   
+  function toggleResultHead() {
+    var show, hide;
+    switch(csm.status) {
+      case csm.byChoreo: show = ".by-choreo"; hide = ".by-order"; break;
+      case csm.byOrder: hide = ".by-choreo"; show = ".by-order"; break;
+    }
+    if(!show && !hide) {
+      $("#result-head").css("display", "none");
+    } else {
+      $(show).css("display", "inline");
+      $(hide).css("display", "none");
+      $("#result-head").css("display", "table-header-group");
+    }
+  }
+  
+  function toggleSubSelectorsDisabled(disable) {
+    $("#choreo").prop("disabled", disable);
+    $("#order").prop("disabled", disable);
+  }
+
+/*############################
+Variables, Constants and helpers
+############################*/
+
   // ajax common parameters to read json
   var commonParams = {
       dataType: "json",
       mimeType: "text/plain; charset=shift_jis"
+  }
+  
+  // Current search method
+  var csm = {
+    none: 0,
+    byChoreo: 1,
+    byOrder: 2,
+    status: 0
+  }
+  
+  function setCurrentSearchMethod(which) {
+    csm.status = which;
   }
   
   // Satatic files
@@ -67,10 +107,14 @@ $(document).ready(function(){
         showErrorMessage(xhr.status + " / " + thrownError);
       }
       */
-      }).fail(failMessageHandler
+    }).fail(failMessageHandler
     );
   }
-  
+
+/*############################
+Ajax helpers
+############################*/
+
   // ajax error handler
   function failMessageHandler(xhr, ajaxOptions, thrownError) {
     var msg = xhr.status + " / " + thrownError;
@@ -85,19 +129,27 @@ $(document).ready(function(){
   }
   
   function setupClassSelector() {
-    $.ajax({
-      dataType: "json",
-      url: "json/index-class.txt",
-      mimeType: "text/plain; charset=shift_jis"
-    }).done(function(result){
+    toggleSubSelectorsDisabled(true);
+    showFileNameMessage(fileClass);
+    $.ajax(fileClass, commonParams
+    ).done(function(result){
       $.each(result, function(i, val){
         $("#class").append('<option value="' + val['class'] +'">' + val['view'] + '</option>');
       });
-    }).fail(function(xhr, ajaxOptions, thrownError){
-      showErrorMessage(xhr.status + " / " + thrownError);
-    });
-    $("#choreo").prop("disabled", true);
-    $("#order").prop("disabled", true);
+    }).fail(failMessageHandler
+    );
+  }
+  
+  function setupSubSelector(selector, url) {
+    setCurrentSearchMethod(csm.none);
+    showFileNameMessage(url);
+    $.ajax(url, commonParams
+    ).done(function(result){
+      $.each(result, function(i, val){
+        $(selector).append('<option value="' + val +'">' + val + '</option>');
+      });
+    }).fail(failMessageHandler
+    );
   }
   
   function resetSelector(selector) {
@@ -116,34 +168,14 @@ $(document).ready(function(){
     resetSelector("#order option");
   }
   
-  function setupSubSelector(selector, url) {
-    $.ajax({
-      dataType: "json",
-      url: url,
-      mimeType: "text/plain; charset=shift_jis"
-    }).done(function(result){
-      $.each(result, function(i, val){
-        $(selector).append('<option value="' + val +'">' + val + '</option>');
-      });
-    }).fail(function(xhr, ajaxOptions, thrownError){
-      showErrorMessage(xhr.status + " / " + thrownError);
-    });
-  }
-  
   function setupChoreoSelector(key) {
-    if(key == "") {
-      $("#choreo").prop("disabled", true);
-    } else {
-      $("#choreo").prop("disabled", false);
+    if(key != "") {
       setupSubSelector("#choreo", "json/" + key + "/index-choreo.txt");
     }
   }
   
   function setupOrderSelector(key) {
-    if(key == "") {
-      $("#order").prop("disabled", true);
-    } else {
-      $("#order").prop("disabled", false);
+    if(key != "") {
       setupSubSelector("#order", "json/" + key + "/index-song.txt");
     }
   }
@@ -155,34 +187,60 @@ $(document).ready(function(){
   function appendResultTable(key, choreo, order) {
     var filename = makeFileName(key, choreo);
     showFileNameMessage(filename);
-    $.ajax({
-      dataType: "json",
-      url: filename,
-      mimeType: "text/plain; charset=shift_jis"
-    }).done(function(result){
+    $.ajax(filename, $.extend({}, commonParams, {
+      context: { key: key, choreo: choreo, order: order }
+      })
+    ).done(function(result){
+      var choreo = this.choreo;
       $.each(result, function(i, val){
-        $("#result").append("<tr><td>" + val["order"] +"</td><td>" + val["song"] +"</td><td>" + val["artist"] + "</td></tr>");
+        var orderOrChoreo;
+        if(csm.status == csm.byOrder) {
+          orderOrChoreo = choreo;
+        } else {
+          orderOrChoreo = val["order"];
+        }
+        $("#result").append("<tr><td>" + orderOrChoreo +"</td><td>" + val["song"] +"</td><td>" + val["artist"] + "</td></tr>");
       });
-    }).fail(function(xhr, ajaxOptions, thrownError){
-      showErrorMessage(xhr.status + " / " + thrownError);
-    });
+    }).fail(failMessageHandler
+    );
   }
   
   function searchSongsByChoreo(choreo) {
     clearCriteriaMessage();
     clearResult();
     if(choreo != "") {
+      setCurrentSearchMethod(csm.byChoreo);
       var key = $("#class").val();
       var view = $("#class option:selected").text();
-      //$("#criteria").append(key + view + choreo);
-      showCriteriaMessage(view + " " + choreo);
+      showCriteria1Message(view);
+      showCriteria2Message(choreo);
+      toggleResultHead();
       appendResultTable(key, choreo, "");
     }
   }
   
   function searchSongsByOrder(order) {
+    clearCriteriaMessage();
+    clearResult();
+    if(choreo != "") {
+      setCurrentSearchMethod(csm.byOrder);
+      var key = $("#class").val();
+      var view = $("#class option:selected").text();
+      showCriteria1Message(view);
+      showCriteria2Message(order);
+      toggleResultHead();
+      // ここで渡す choreo を作るためにリストからループさせるが、
+      // そのネタになる choreo list を、
+      // selector load のタイミングで、
+      // 永続変数として作っておく。
+      appendResultTable(key, choreo, order);
+    }
   }
-  
+
+/*############################
+Ajax Event hanlers
+############################*/
+
   $("#class").change(function(){
     var selected = $(this).val();
     clearCriteriaMessage();
@@ -191,6 +249,7 @@ $(document).ready(function(){
     setupChoreoSelector(selected);
     resetOrderSelector();
     setupOrderSelector(selected);
+    toggleSubSelectorsDisabled(selected == "");
   });
   
   $("#choreo").change(function(){

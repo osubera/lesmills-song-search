@@ -1,0 +1,21 @@
+/* minimum required styles */
+
+/* html5 section tags */
+header, footer, main {
+  display: block;
+}
+
+/* initial state */
+#result-head {
+  display: none;
+}
+
+/* disable fixed console and footer */
+#fixed-console-spacer, #fixed-footer-spacer {
+  display: none;
+}
+
+/* responsible table format */
+/* for larger screen, such as pc */
+/* for smaller screen, such as mobile */
+/* for paper print */
