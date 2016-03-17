@@ -32,7 +32,7 @@ main header h2 {
 }
 
 /* readability */
-h1, h2, h3 {
+h1, h2, h3, option {
   font-size: 1rem;
   margin: 0;
 }
