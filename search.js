@@ -226,7 +226,7 @@ Ajax helpers
   function appendResultTable(key, choreo, order) {
     var filename = makeFileName(key, choreo);
     $.ajax(filename, $.extend({}, commonParams, {
-      context: { key: key, choreo: choreo, order: order, url: filename }
+      context: { key: key, choreo: choreo, order: order }
       })
     ).done(makeSongList
     ).fail(failMessageHandler
