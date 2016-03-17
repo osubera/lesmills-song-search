@@ -15,7 +15,92 @@ header, footer, main {
   display: none;
 }
 
-/* responsible table format */
+/* remove outmost margins */
+body {
+  margin: 0px;
+}
+table  {
+//margin: 0 0.6rem 0 0.6rem;
+}
+
+/* condensed */
+main header {
+  display: flex;
+  justify-content: center;
+  padding: 0.6rem 0 0.6rem 0;
+}
+main header h2 {
+  margin-right: 1rem;
+}
+/*
+#console header{
+  width: calc(100%/8);
+}
+#console form {
+  width: calc(100%/2);
+}
+#console div {
+  width: calc(100%/4);
+}
+h2, h3 {
+  //width: calc(100% / 2);
+}
+*/
+
+footer {
+  margin-top: 1rem;
+  padding-right: 0.6rem;
+  text-align: right;
+}
+
+/* readability */
+h1, h2, h3 {
+  font-size: 1rem;
+  margin: 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+th, td {
+  text-align: left;
+}
+tr {
+  border-bottom: 0.1rem solid silver;
+}
+#error {
+  color: crimson;
+}
+#filename {
+  color: LightGray;
+}
+
+main header {
+  background-color: LightGray;
+}
+
+/* responsible format */
 /* for larger screen, such as pc */
+th, td {
+  padding: 0.6rem;
+}
+#console {
+  display: flex;
+}
+#console div, #console header, #console form {
+  margin-left: 0.6rem;
+}
 /* for smaller screen, such as mobile */
+@media only screen and (max-width: 700px) {
+  th, td {
+    display: block;
+    padding: 0;
+  }
+  #console {
+    display: inline;
+  }
+  #console div, #console header, #console form {
+    margin-right: 0;
+  }
+}
 /* for paper print */

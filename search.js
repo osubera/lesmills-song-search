@@ -150,6 +150,8 @@ Ajax helpers
     } else if(ajaxOptions == "parsererror") { // JSON.parse error
       x = txt["invalid"];
     }
+    console.log(this.url);
+    console.log(msg);
     if(x) {msg = x; }
     showErrorMessage(msg);
   }
