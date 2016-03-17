@@ -271,14 +271,15 @@ Ajax Event hanlers
   $("#class").change(function(){
     var selected = $(this).val();
     setCurrentSearchMethod(csm.none);
+    toggleResultHead();
+    clearResult();
     clearErrorMessage();
     clearFileNameMessage();
     clearCriteriaMessages();
-    toggleResultHead();
-    clearResult();
     resetChoreoSelector();
-    setupChoreoSelector(selected);
     resetOrderSelector();
+    showCriteria1Message(selected);
+    setupChoreoSelector(selected);
     setupOrderSelector(selected);
     toggleSubSelectorsDisabled(selected == "");
   });
