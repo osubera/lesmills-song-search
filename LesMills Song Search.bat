@@ -1,1 +1,1 @@
-firefox song.html
+"C:\Program Files (x86)\Mozilla Firefox\firefox.exe" song.html
