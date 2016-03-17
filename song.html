@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="shift_jis">
+  <title>LesMills Song Search</title>
+  <script src="jquery-2.2.1.min.js"></script>
+  <script src="search.js"></script>
+  <link rel="stylesheet" href="ju4.css" />
+  <link rel="stylesheet" href="thema/thema.css" />
+</head>
+<body>
+
+<div id="console">
+  <header><h1>LesMills</h1></header>
+  <form>
+    <select id="class" name="class">
+      <option selected="selected" value="">種目を選ぶ ▼</option>
+    </select>
+    <select id="choreo" name="choreo">
+      <option selected="selected" value="">コリオ番号を選ぶ ▼</option>
+    </select>
+    <select id="order" name="order">
+      <option selected="selected" value="">曲順を選ぶ ▼</option>
+    </select>
+  </form>
+  <div id="error"></div>
+  <div id="filename"></div>
+</div>
+
+<div id="fixed-console-spacer"></div>
+
+<main>
+  <header><h2 id="criteria1"></h2><h3 id="criteria2"></h3></header>
+  <table>
+    <thead id="result-head">
+      <tr>
+        <th>
+          <span  class="by-order">コリオ番号</span>
+          <span class="by-choreo">曲順</span></th>
+        <th>曲名</th>
+        <th>アーティスト名</th>
+      </tr>
+    </thead>
+    <tbody id="result"></tbody>
+  </table>
+</main>
+
+<div id="fixed-footer-spacer"></div>
+
+<footer><span><a href="https://github.com/osubera/lesmills-song-search">sources are available at github. </a></span></footer>
+</body>
+</html>
