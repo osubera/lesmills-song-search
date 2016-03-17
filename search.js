@@ -109,7 +109,6 @@ Variables, Constants and helpers
   
   // Multi-language text data
   function loadTexts() {
-    showFileNameMessage(fileText);
     $.ajax(fileText, commonParams
     ).done(function(result){
       txt = result;  // async load to outer scope
@@ -154,6 +153,7 @@ Ajax helpers
     console.log(msg);
     if(x) {msg = x; }
     showErrorMessage(msg);
+    showFileNameMessage(this.url);
   }
   
   // remove option tags from select box
@@ -175,9 +175,7 @@ Ajax helpers
   
   // initialize option tags in select box
   function setupClassSelector() {
-    clearErrorMessage();
     toggleSubSelectorsDisabled(true);
-    showFileNameMessage(fileClass);
     $.ajax(fileClass, commonParams
     ).done(function(result){
       $.each(result, function(i, val){
@@ -188,9 +186,7 @@ Ajax helpers
   }
   
   function setupSubSelector(selector, url) {
-    clearErrorMessage();
     setCurrentSearchMethod(csm.none);
-    showFileNameMessage(url);
     $.ajax(url, commonParams
     ).done(function(result){
       $.each(result, function(i, val){
@@ -228,9 +224,7 @@ Ajax helpers
   }
   
   function appendResultTable(key, choreo, order) {
-    clearErrorMessage();
     var filename = makeFileName(key, choreo);
-    showFileNameMessage(filename);
     $.ajax(filename, $.extend({}, commonParams, {
       context: { key: key, choreo: choreo, order: order }
       })
@@ -277,6 +271,8 @@ Ajax Event hanlers
   $("#class").change(function(){
     var selected = $(this).val();
     setCurrentSearchMethod(csm.none);
+    clearErrorMessage();
+    clearFileNameMessage();
     clearCriteriaMessages();
     toggleResultHead();
     clearResult();
@@ -289,12 +285,16 @@ Ajax Event hanlers
   
   $("#choreo").change(function(){
     var selected = $(this).val();
+    clearErrorMessage();
+    clearFileNameMessage();
     unselectOrderSelector();
     searchSongsByChoreo(selected);
   });
   
   $("#order").change(function(){
     var selected = $(this).val();
+    clearErrorMessage();
+    clearFileNameMessage();
     unselectChoreoSelector();
     searchSongsByOrder(selected);
   });
