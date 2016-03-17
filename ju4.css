@@ -19,38 +19,16 @@ header, footer, main {
 body {
   margin: 0px;
 }
-table  {
-//margin: 0 0.6rem 0 0.6rem;
-}
 
-/* condensed */
+/* condensed header */
 main header {
   display: flex;
   justify-content: center;
   padding: 0.6rem 0 0.6rem 0;
+  background-color: lightgray;
 }
 main header h2 {
   margin-right: 1rem;
-}
-/*
-#console header{
-  width: calc(100%/8);
-}
-#console form {
-  width: calc(100%/2);
-}
-#console div {
-  width: calc(100%/4);
-}
-h2, h3 {
-  //width: calc(100% / 2);
-}
-*/
-
-footer {
-  margin-top: 1rem;
-  padding-right: 0.6rem;
-  text-align: right;
 }
 
 /* readability */
@@ -75,8 +53,10 @@ tr {
   color: deeppink;
 }
 
-main header {
-  background-color: lightgray;
+footer {
+  margin-top: 1rem;
+  padding-right: 0.6rem;
+  text-align: right;
 }
 
 /* responsible format */
@@ -104,3 +84,8 @@ th, td {
   }
 }
 /* for paper print */
+@media print {
+  main header {
+    background-color: white;
+  }
+}
