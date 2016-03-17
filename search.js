@@ -116,6 +116,10 @@ Variables, Constants and helpers
     }).fail(failMessageHandler
     );
   }
+  
+  function makeFileName(key, choreo) {
+    return("json/" + key + "/" + choreo.toLowerCase().replace(/\W/g, "") + ".txt");
+  }
 
 /*############################
 HTML helpers
@@ -150,6 +154,24 @@ Ajax helpers
     showErrorMessage(msg);
   }
   
+  // remove option tags from select box
+  function resetSelector(selector) {
+    $(selector).each(function(){
+      if(this.value != "") {
+        this.remove();
+      }
+    });
+  }
+  
+  function resetChoreoSelector() {
+    resetSelector("#choreo option");
+  }
+  
+  function resetOrderSelector() {
+    resetSelector("#order option");
+  }
+  
+  // initialize option tags in select box
   function setupClassSelector() {
     clearErrorMessage();
     toggleSubSelectorsDisabled(true);
@@ -176,22 +198,6 @@ Ajax helpers
     );
   }
   
-  function resetSelector(selector) {
-    $(selector).each(function(){
-      if(this.value != "") {
-        this.remove();
-      }
-    });
-  }
-  
-  function resetChoreoSelector() {
-    resetSelector("#choreo option");
-  }
-  
-  function resetOrderSelector() {
-    resetSelector("#order option");
-  }
-  
   function setupChoreoSelector(key) {
     if(key != "") {
       setupSubSelector("#choreo", "json/" + key + "/index-choreo.txt");
@@ -204,10 +210,7 @@ Ajax helpers
     }
   }
   
-  function makeFileName(key, choreo) {
-    return("json/" + key + "/" + choreo.toLowerCase().replace(/\W/g, "") + ".txt");
-  }
-  
+  // generate final song list
   function makeSongList(result) {
     var choreo = this.choreo;
     var order = this.order;
@@ -271,7 +274,9 @@ Ajax Event hanlers
 
   $("#class").change(function(){
     var selected = $(this).val();
+    setCurrentSearchMethod(csm.none);
     clearCriteriaMessages();
+    toggleResultHead();
     clearResult();
     resetChoreoSelector();
     setupChoreoSelector(selected);
