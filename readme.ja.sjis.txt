@@ -258,6 +258,19 @@ Removable でなく storage を使えば動く。
 security.fileuri.strict_origin_policy を false にすれば
 Removable のパスでも動くが、セキュリティは緩くなる。
 
+== Google Chrome 対応 ==
+
+--allow-file-access-from-files オプションをつければ動く。
+
+Mac の場合、
+ターミナルで、このフォルダに移動してから、
+open -a "/Applications/Google Chrome.app" song.html --args -allow-file-access-from-files
+
+== iOS, iPad, iPhone 対応 ==
+
+Firefox, Safari でローカルファイルを開く方法がわからない。
+今のところ無理。
+
 == 配布元 ==
 
 https://github.com/osubera/lesmills-song-search
