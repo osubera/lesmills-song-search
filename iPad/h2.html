@@ -109,8 +109,8 @@ Variables, Constants and helpers
     txt = result;  // async load to outer scope
   }
   
-  function makeFileName(key, choreo) {
-    return("json/" + key + "/" + choreo.toLowerCase().replace(/\W/g, "") + ".txt");
+  function makeFileName(choreo) {
+    return(choreo.toLowerCase().replace(/\W/g, ""));
   }
   
   // Keep selector heads
@@ -180,65 +180,50 @@ Ajax helpers
     setCurrentSearchMethod(csm.none);
     var result = songData[key][file];
     if(!result) { failMessageHandler(key + "/" + file); }
-    $.ajax(url, commonParams
-    ).done(function(result){
-      $.each(result, function(i, val){
-        $(selector).append(makeHtmlOption(val, val));
-      });
-    }).fail(failMessageHandler
-    );
+    var x = optionUnselected[selector];
+    for(var i=0; i < result.length; i++) {
+      x += makeHtmlOption(result[i], result[i]);
+    }
+    document.getElementById(selector).innerHTML = x;
   }
   
   function setupChoreoSelector(key) {
     if(key != "") {
-      /*
-      setupSubSelector("#choreo", "json/" + key + "/index-choreo.txt");
-      */
-      setCurrentSearchMethod(csm.none);
-        var result = songData["bodyattack"].indexchoreo;
-        var selector = "#choreo";
-        var x = optionUnselected.choreo;
-        for(var i=0; i < result.length; i++) {
-          x += makeHtmlOption(result[i], result[i]);
-        }
-        document.getElementById("choreo").innerHTML = x;
-        /*
-        $.each(result, function(i, val){
-          $(selector).append(makeHtmlOption(val, val));
-        });
-        */
+      setupSubSelector("choreo", key, "index-choreo");
     }
   }
   
   function setupOrderSelector(key) {
     if(key != "") {
-      setupSubSelector("#order", "json/" + key + "/index-song.txt");
+      setupSubSelector("order", key, "index-song");
     }
   }
   
   // generate final song list
-  function makeSongList(result) {
-    var choreo = this.choreo;
-    var order = this.order;
-    $.each(result, function(i, val){
+  function makeSongList(result, choreo, order) {
+    var x = "";
+    for(var i = 0; i < result.length; i++) {
+      var val = result[i];
       if(csm.status == csm.byOrder) {
         if(val["order"] == order) {
-          $("#result").append(makeHtmlTrTd([choreo, val["song"], val["artist"]]));
+          x += makeHtmlTrTd([choreo, val["song"], val["artist"]]);
         }
       } else {  // byChoreo
-        $("#result").append(makeHtmlTrTd([val["order"], val["song"], val["artist"]]));
+        x += makeHtmlTrTd([val["order"], val["song"], val["artist"]]);
       }
-    });
+    }
+    return(x);
   }
   
-  function appendResultTable(key, choreo, order) {
-    var filename = makeFileName(key, choreo);
-    $.ajax(filename, $.extend({}, commonParams, {
-      context: { key: key, choreo: choreo, order: order, url: filename }
-      })
-    ).done(makeSongList
-    ).fail(failMessageHandler
-    );
+  function appendResultTable(key, choreos, order) {
+    var x = "";
+    for(var i = 0; i < choreos.length; i++) {
+      var filename = makeFileName(choreos[i]);
+      var result = songData[key][filename];
+      if(!result) { failMessageHandler(key + "/" + file); }
+      x += makeSongList(result, filename, order);
+    }
+    document.getElementById("result").innerHTML = x;
   }
   
   function searchSongsByChoreo(choreo) {
@@ -246,12 +231,13 @@ Ajax helpers
     clearResult();
     if(choreo != "") {
       setCurrentSearchMethod(csm.byChoreo);
-      var key = $("#class").val();
-      var view = $("#class option:selected").text();
+      var o = document.getElementById("class");
+      var key = o.value;
+      var view = o.options[o.selectedIndex].text;
       showCriteria1Message(view);
       showCriteria2Message(choreo);
       toggleResultHead();
-      appendResultTable(key, choreo, "");
+      appendResultTable(key, [choreo], "");
     }
   }
   
@@ -260,15 +246,14 @@ Ajax helpers
     clearResult();
     if(choreo != "") {
       setCurrentSearchMethod(csm.byOrder);
-      var key = $("#class").val();
-      var view = $("#class option:selected").text();
+      var o = document.getElementById("class");
+      var key = o.value;
+      var view = o.options[o.selectedIndex].text;
       showCriteria1Message(view);
       showCriteria2Message(order);
       toggleResultHead();
       var choreos = getCurrentChoreos();
-      for(var i = 0; i < choreos.length; i++) {
-        appendResultTable(key, choreos[i], order);
-      }
+      appendResultTable(key, choreos, order);
     }
   }
 
@@ -317,7 +302,6 @@ Main
   loadTexts();
   saveSelectorHeads();
   setupClassSelector();
-  console.log("done");
 
 });
   </script>
