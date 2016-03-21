@@ -62,7 +62,7 @@ DOM helpers
 
   function getCurrentChoreos() {
     var x = [];
-    var o = document.getElementById("choreo").childNodes;
+    var o = document.getElementById("choreo").options;
     for(var i=0; i < o.length; i++) {
       x.push(o[i].value);
     };
@@ -141,10 +141,10 @@ HTML helpers
   }
 
 /*############################
-Ajax helpers
+Event helpers
 ############################*/
 
-  // ajax error handler
+  // error handler
   function failMessageHandler(key) {
     var msg = txt["nofiles"];
     console.log(msg);
@@ -258,12 +258,11 @@ Ajax helpers
   }
 
 /*############################
-Ajax Event hanlers
+Event hanlers
 ############################*/
 
-/*
-  $("#class").change(function(){
-    var selected = $(this).val();
+  document.getElementById("class").addEventListener("change", function(){
+    var selected = this.value;
     setCurrentSearchMethod(csm.none);
     toggleResultHead();
     clearResult();
@@ -278,23 +277,22 @@ Ajax Event hanlers
     toggleSubSelectorsDisabled(selected == "");
   });
   
-  $("#choreo").change(function(){
-    var selected = $(this).val();
+  document.getElementById("choreo").addEventListener("change", function(){
+    var selected = this.value;
     clearErrorMessage();
     clearFileNameMessage();
     unselectOrderSelector();
     searchSongsByChoreo(selected);
   });
   
-  $("#order").change(function(){
-    var selected = $(this).val();
+  document.getElementById("order").addEventListener("change", function(){
+    var selected = this.value;
     clearErrorMessage();
     clearFileNameMessage();
     unselectChoreoSelector();
     searchSongsByOrder(selected);
   });
-  
-  */
+
 /*############################
 Main
 ############################*/
