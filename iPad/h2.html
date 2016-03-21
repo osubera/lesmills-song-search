@@ -62,32 +62,27 @@ DOM helpers
 
   function getCurrentChoreos() {
     var x = [];
-    $("#choreo option").each(function() {
-      x.push($(this).val());
-    });
+    var o = document.getElementById("choreo").childNodes;
+    for(var i=0; i < o.length; i++) {
+      x.push(o[i].value);
+    };
     return(x.filter(
       function(element, index, array) {return(element != "");}
     ));
   }
   
   function unselectChoreoSelector() {
-    $("#choreo").val("");
+    document.getElementById("choreo").value = "";
   }
   
   function unselectOrderSelector() {
-    $("#order").val("");
+    document.getElementById("order").value = "";
   }
 
 /*############################
 Variables, Constants and helpers
 ############################*/
 
-  // ajax common parameters to read json
-  var commonParams = {
-      dataType: "json",
-      mimeType: "text/plain; charset=shift_jis"
-  }
-  
   // Current search method
   var csm = {
     none: 0,
@@ -101,24 +96,17 @@ Variables, Constants and helpers
   }
   
   // Satatic files
-  var fileText = "json/index-text.txt";
-  var fileClass = "index-class.txt";
+  var fileText = "index-text";
+  var fileClass = "index-class";
   
   // Text data
   var txt = {};
   
   // Multi-language text data
   function loadTexts() {
-    var result = songData["index-text"];
-    /*
-    $.ajax(fileText, commonParams
-    ).done(function(result){
-      */
-      txt = result;  // async load to outer scope
-      /*
-    }).fail(failMessageHandler
-    );
-    */
+    var result = songData[fileText];
+    if(!result) { failMessageHandler(fileText); }
+    txt = result;  // async load to outer scope
   }
   
   function makeFileName(key, choreo) {
@@ -126,14 +114,14 @@ Variables, Constants and helpers
   }
   
   // Keep selector heads
-  var classUnselected = "";
-  var choreoUnselected = "";
-  var orderUnselected = "";
+  var optionUnselected = {};
   
   function saveSelectorHeads() {
-    classUnselected = document.getElementById("class").innerHTML;
-    choreoUnselected = document.getElementById("choreo").innerHTML;
-    orderUnselected = document.getElementById("order").innerHTML;
+    optionUnselected = {
+      "class": document.getElementById("class").innerHTML, 
+      "choreo": document.getElementById("choreo").innerHTML, 
+      "order": document.getElementById("order").innerHTML
+    };
   }
 
 /*############################
@@ -157,65 +145,41 @@ Ajax helpers
 ############################*/
 
   // ajax error handler
-  function failMessageHandler(xhr, ajaxOptions, thrownError) {
-    var msg = xhr.status + " / " + thrownError;
-    var x;
-    if(xhr.status != 200) { // Access to restricted URI denied
-      x = txt["nofiles"];
-    } else if(ajaxOptions == "parsererror") { // JSON.parse error
-      x = txt["invalid"];
-    }
-    console.log(this.url);
+  function failMessageHandler(key) {
+    var msg = txt["nofiles"];
     console.log(msg);
-    if(x) {msg = x; }
     showErrorMessage(msg);
-    showFileNameMessage(this.url);
+    showFileNameMessage(key);
   }
   
   // remove option tags from select box
   function resetSelector(selector) {
-    $(selector).each(function(){
-      if(this.value != "") {
-        this.remove();
-      }
-    });
+    document.getElementById(selector).innerHTML = optionUnselected[selector];
   }
   
   function resetChoreoSelector() {
-    resetSelector("#choreo option");
+    resetSelector("choreo");
   }
   
   function resetOrderSelector() {
-    resetSelector("#order option");
+    resetSelector("order");
   }
   
   // initialize option tags in select box
   function setupClassSelector() {
-    /*
-    toggleSubSelectorsDisabled(true);
-    $.ajax(fileClass, commonParams
-    ).done(function(result){
-      */
-      var result = songData["index-class"];
-      console.log(result);
-      var x = classUnselected;
-      for(var i=0; i < result.length; i++) {
-        x += makeHtmlOption(result[i].class, result[i].view);
-      }
-      document.getElementById("class").innerHTML = x;
-        /*
-      $.each(result, function(i, val){
-        $("#class").append(makeHtmlOption(val['class'], val['view']));
-      });
-      */
-      /*
-    }).fail(failMessageHandler
-    );
-    */
+    var result = songData[fileClass];
+    if(!result) { failMessageHandler(fileClass); }
+    var x = optionUnselected.class;
+    for(var i=0; i < result.length; i++) {
+      x += makeHtmlOption(result[i].class, result[i].view);
+    }
+    document.getElementById("class").innerHTML = x;
   }
   
-  function setupSubSelector(selector, url) {
+  function setupSubSelector(selector, key, file) {
     setCurrentSearchMethod(csm.none);
+    var result = songData[key][file];
+    if(!result) { failMessageHandler(key + "/" + file); }
     $.ajax(url, commonParams
     ).done(function(result){
       $.each(result, function(i, val){
@@ -233,7 +197,7 @@ Ajax helpers
       setCurrentSearchMethod(csm.none);
         var result = songData["bodyattack"].indexchoreo;
         var selector = "#choreo";
-        var x = choreoUnselected;
+        var x = optionUnselected.choreo;
         for(var i=0; i < result.length; i++) {
           x += makeHtmlOption(result[i], result[i]);
         }
