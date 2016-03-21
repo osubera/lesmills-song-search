@@ -221,7 +221,7 @@ Event helpers
       var filename = makeFileName(choreos[i]);
       var result = songData[key][filename];
       if(!result) { failMessageHandler(key + "/" + file); }
-      x += makeSongList(result, filename, order);
+      x += makeSongList(result, choreos[i], order);
     }
     document.getElementById("result").innerHTML = x;
   }
