@@ -1,0 +1,25 @@
+$ ./make.sh > song.ipad.html
+beginning JSON
+begin at .././json
+beginning folder bodyattack at .././json/bodyattack
+terminating previous folder bodyattack with 58 files
+beginning folder bodybalance at .././json/bodybalance
+terminating previous folder bodybalance with 59 files
+beginning folder bodycombat at .././json/bodycombat
+terminating previous folder bodycombat with 66 files
+beginning folder bodyjam at .././json/bodyjam
+terminating previous folder bodyjam with 41 files
+beginning folder bodypump at .././json/bodypump
+terminating previous folder bodypump with 78 files
+beginning folder bodystep at .././json/bodystep
+terminating previous folder bodystep with 62 files
+beginning folder bodyvive at .././json/bodyvive
+terminating previous folder bodyvive with 33 files
+beginning folder cxworx at .././json/cxworx
+terminating previous folder cxworx with 20 files
+beginning folder rpm at .././json/rpm
+terminating previous folder rpm with 59 files
+beginning folder shbam at .././json/shbam
+terminating previous folder shbam with 23 files
+terminating JSON
+501 files in 10 folders
