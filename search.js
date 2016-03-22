@@ -250,7 +250,7 @@ Ajax helpers
   function searchSongsByOrder(order) {
     clearCriteriaMessages();
     clearResult();
-    if(choreo != "") {
+    if(order != "") {
       setCurrentSearchMethod(csm.byOrder);
       var key = $("#class").val();
       var view = $("#class option:selected").text();

@@ -63,12 +63,11 @@ DOM helpers
   function getCurrentChoreos() {
     var x = [];
     var o = document.getElementById("choreo").options;
-    for(var i=0; i < o.length; i++) {
+    // i=0 is always "", should be removed
+    for(var i=1; i < o.length; i++) {
       x.push(o[i].value);
     };
-    return(x.filter(
-      function(element, index, array) {return(element != "");}
-    ));
+    return(x);
   }
   
   function unselectChoreoSelector() {
@@ -244,7 +243,7 @@ Event helpers
   function searchSongsByOrder(order) {
     clearCriteriaMessages();
     clearResult();
-    if(choreo != "") {
+    if(order != "") {
       setCurrentSearchMethod(csm.byOrder);
       var o = document.getElementById("class");
       var key = o.value;
