@@ -1,4 +1,6 @@
 #!/bin/sh
+# joins html, css, js and json into a huge html for iPad
+# usage:  ./make.sh > song.ipad.html
 
 function toDo {
   #echo $1 >&2
