@@ -1,0 +1,142 @@
+/* minimum required styles */
+
+/* html5 section tags */
+header, footer, section {
+  display: block;
+}
+
+/* remove outmost margins */
+body {
+  margin: 0;
+}
+
+.outmost {
+  margin: 2rem;
+}
+
+/* headers */
+h1, h2 {
+  text-align: center;
+  font-size: 1.4rem;
+}
+
+h2 {
+  margin: 0;
+}
+
+/* colors */
+h1 {
+  background: linear-gradient(white, #EBFFF5, #99FFCC); 
+}
+
+#csvblock {
+  border-color: #75c7f0;
+}
+
+#jsonblock {
+  border-color: #f5a3a3;
+}
+
+/* form parts */
+textarea {
+  height: 10rem;
+  white-space: pre; /* required to show horizontal scroll bar */
+}
+
+#delimiter {
+  width: 4rem;
+}
+
+fieldset {
+  border-radius: 0.4rem;
+}
+
+.exec {
+  font-size: 3rem;
+  display: block;
+}
+
+/* readability */
+#error {
+  color: crimson;
+}
+footer {
+  margin-top: 1rem;
+  padding-right: 0.6rem;
+  text-align: right;
+}
+a {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* responsible format */
+/* for larger screen, such as pc */
+#csvblock, #jsonblock {
+  padding: 1rem;
+  border-radius: 1rem;
+  border-width: 0.3rem;
+  border-style: solid;
+}
+
+/* flex box */
+section {
+  display:flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+h2 {
+  width: 10%;
+}
+
+textarea {
+  width: 86%;
+}
+
+/* for smaller screen, such as mobile */
+@media only screen and (max-width: 639px) {
+  section {
+    display:block;
+  }
+  
+  h2, textarea {
+    width: 98%;
+  }
+  
+  #csvblock, #jsonblock {
+    margin: 0;
+    padding: 0;
+    border-radius: 0.2rem;
+    border-width: 0.1rem;
+  }
+  
+  fieldset {
+    border-radius: 0.2rem;
+  }
+  
+  section {
+    margin-bottom: 0;
+  }
+  
+  .outmost {
+    margin:0;
+  }
+  
+  .exec, h1, h2 {
+    font-size: 1rem;
+  }
+  
+  .exec {
+    display: inline;
+  }
+}
+
+/* for paper print */
+@media print {
+  h1 {
+    background-color: white;
+  }
+}

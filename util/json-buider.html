@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="shift_jis" />
+  <title>json builder</title>
+  <script src="../jquery-2.2.1.min.js"></script>
+  <script src="builder.js"></script>
+  <link rel="stylesheet" href="ju4.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body>
+
+  <h1 id="title">json builder</h1>
+  <form>
+    <section id="undoblock" class="outmost">
+      <h2>
+        <button type="button" id="undo">undo</button>
+      </h2>
+      <div id="error"></div>
+    </section>
+    
+    <div id="csvblock" class="outmost">
+      <section id="keys">
+        <h2 id="keylist">keys</h2>
+        <div id="keyboxes">
+        // イベントハンドラの割当ても含め、動的に作る。
+          <input type="text" />
+          <button type="button">⇔</button>
+          <input type="text" />
+          <button type="button">⇔</button>
+          <input type="text" />
+        </div>
+        <button type="button" id="addkey">+</button>
+      </section>
+      
+      <section id="csvdata">
+        <h2>
+          <input type="text" value="," id="delimiter" />
+          <span id="csvtitle">delimited</span>
+          <button type="button" class="exec" id="tojson">↓</button>
+        </h2>
+        <textarea id="csv"></textarea>
+      </section>
+      
+      <section id="escape">
+      <fieldset>
+        <legend id="escquotetitle">double quotation (") will be replaced to ..</legend>
+        <input type="radio" name="escquote" value="zen" id="zenid" checked="checked" />
+        <label for="zenid" id="zenlabel">to zenkaku char</label>
+        <input type="radio" name="escquote" value="esc" id="escid" />
+        <label for="escid" id="esclabel">escape</label>
+        <input type="radio" name="escquote" value="del" id="delid" />
+        <label for="delid" id="dellabel">delete</label>
+        <input type="radio" name="escquote" value="nop" id="nopid" />
+        <label for="nopid" id="noplabel">keep as is</label>
+      </fieldset>
+      
+      <fieldset>
+        <legend id="escyentitle">backquote (\) will be replaced to ..</legend>
+        <input type="radio" name="escyen" value="zen" id="yzenid" checked="checked" />
+        <label for="yzenid" id="yzenlabel">to zenkaku char</label>
+        <input type="radio" name="escyen" value="esc" id="yescid" />
+        <label for="yescid" id="yesclabel">escape</label>
+        <input type="radio" name="escyen" value="del" id="ydelid" />
+        <label for="ydelid" id="ydellabel">delete</label>
+        <input type="radio" name="escyen" value="nop" id="ynopid" />
+        <label for="ynopid" id="ynoplabel">keep as is</label>
+      </fieldset>
+      </section>
+    </div>
+    
+    <div id="jsonblock" class="outmost">
+      <section id="jsondata">
+        <h2>
+          <span id="jsontitle">JSON</span>
+          <button type="button" class="exec" id="fromjson">↑</button>
+        </h2>
+        <textarea id="json"></textarea>
+      </section>
+    </div>
+    
+    <section class="outmost">
+      <ul id="instruction">
+      </ul>
+    </section>
+  
+  </form>
+  
+  <footer><span><a href="https://github.com/osubera/lesmills-song-search">sources are available at github. </a></span></footer>
+</body>
+</html>
