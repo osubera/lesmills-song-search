@@ -62,8 +62,8 @@ function toDo {
     $fullPath=$a.FullName
     $fileName=$a.Name
     $fileNameWithoutExt=$a.BaseName
-    $CountFile = $CountFile + 1
-    $CountFileInFolder = $CountFileInFolder + 1
+    $script:CountFile += 1
+    $script:CountFileInFolder += 1
     Write-Debug "$fullPath $fileName $fileNameWithoutExt"
     #echo $CountFile $CountFileInFolder $fullPath $fileName $fileNameWithoutExt
     commaBetweenFiles
@@ -84,7 +84,6 @@ function terminateJSON {
 
 function beginFolder {
   Write-Debug "beginning folder $folderName at $folderPath"
-  #echo $CountFileInFolder
   commaBetweenFolders
   "`"$($folderName)`": {"
 }
@@ -97,9 +96,7 @@ function terminateFolder {
 }
 
 function commaBetweenFolders {
-   ","
-#  bug: CountFileInFolder is not working. so temporally always use comma
-#  commaBetweenFiles
+   commaBetweenFiles
 #  exactly same as Files, if there're no blank folders.  
 }
 
@@ -183,15 +180,14 @@ function ScanDir {
       $folderPath = $aa
       $folderName = Split-Path $aa -leaf
     }
-    $CountFolder= $CountFolder + 1
-    #echo $CountFolder
+    $script:CountFolder += 1
     if($CountFolder -eq 0) {
       Write-Debug "begin at $folderPath"
     }
     else {
       beginFolder
     }
-    $CountFileInFolder = 0
+    $script:CountFileInFolder = 0
     ListIndexFiles $folderPath
     ListDataFiles $folderPath
     ListDirectories $folderPath
