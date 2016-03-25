@@ -7,6 +7,7 @@
 * ju4.css
 * thema フォルダ
 * json フォルダ
+
 * iPad フォルダ
 * jquery-2.2.1.min.js
 
@@ -269,34 +270,57 @@ open -a "/Applications/Google Chrome.app" song.html --args -allow-file-access-fr
 
 == iOS, iPad, iPhone 対応 ==
 
+
 === iOS 上の Firefox, Safari ===
 
+
 Firefox, Safari でローカルファイルを開く方法がわからない。
+
 どうやら、開けない仕様。
 今のところ無理。
 
+
 === iOS 上の Html Viewer ===
+
+
 
 次の制限があるものの、java script が動く。
 
+
+
 # 外部 script 、外部 css は読まない。
+
 # script から、外部ファイル (json) は読まない。
+
 # コールバックのような非同期処理が非常に遅い。
+
+
 
 html, css, javascript, json を 1 ファイルに統合し、
 jquery を使わない処理に書きなおした。
+
 Dropbox などのクラウド経由で iPad に投げれば動く。
 
+
 iPad フォルダに、各パーツと統合スクリプトがあるので、
+
 json フォルダのデータを更新する都度、統合スクリプトを動かして、
 ファイルを再構築する。
 
+
+
 Mac, Linux 用: ./make.sh > song.ipad.html
+
 Windows 用: 予定 ./make.win.ps1
+
+
 
 == IE 対応 ==
 
+
+
 iOS 用の統合ファイルは、IE でも動作する。
+
 
 == 配布元 ==
 
