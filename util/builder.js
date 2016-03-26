@@ -160,8 +160,10 @@ Converter
     var lengthen = newLength -oldLength;
     if(lengthen < 0) {
        keys.push(new Array(-lengthen)); 
-     }
-    $("#keyboxes input").val(keys);
+    }
+    $("#keyboxes input").each(function(i, element){
+      element.value = keys[i];
+    });
     if(lengthen >0) {
       keys.splice(0, oldLength);
       addKey(lengthen, keys); 
