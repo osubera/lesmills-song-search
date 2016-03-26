@@ -118,9 +118,13 @@ Converter
     var json = "{";
     var x = data.split(getDelimiter());
     var keys = getKeys();
+    var first = true;
+    var d = "";
     for(var k=0; k < keys.length; k++) {
       if(x[k]) {
-        json += (',"' + keys[k] + '": "' + x[k] + '"');
+        if(first) { first = false; }
+        else { d = ","; }
+        json += (d + '"' + keys[k] + '": "' + x[k] + '"');
       }
     }
     json += "},";
