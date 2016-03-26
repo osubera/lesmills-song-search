@@ -114,9 +114,8 @@ Ajax helpers
 Converter
 ############################*/
 
-  function makeJsonOneRowHash(data, first) {
-    var json = ",{";
-    if(first) { json = "{"; }
+  function makeJsonOneRowHash(data, notlast) {
+    var json = "{";
     var x = data.split(getDelimiter());
     var keys = getKeys();
     for(var k=0; k < keys.length; k++) {
@@ -124,7 +123,7 @@ Converter
         json += (',"' + keys[k] + '": "' + x[k] + '"');
       }
     }
-    json += "}\n";
+    json += "},";
     return(json);
   }
   
@@ -133,9 +132,13 @@ Converter
     json += ("[");
     for(var r=0; r < data.length; r++) {
       if(data[r].trim().length == 0) { continue; }
-      json += makeJsonOneRowHash(data[r], r == 0);
+      json += "\n";
+      json += makeJsonOneRowHash(data[r]);
     }
-    json += "]\n";
+    /* because the text includes blank lines, the last record is unknown. 
+      so, the last comma is to be deleted at this point */
+    json = json.slice(0, -1);
+    json += "\n]\n";
     return(json);
   }
   
