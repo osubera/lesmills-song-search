@@ -43,11 +43,11 @@ DOM helpers
       x.push(makeHtmlInputKey());
     }
     y += x.join(ex);
-//     $.when($("#keyboxes").append(y)).done(
-//     $("#keyboxes button").click(onExchangeKey);
-//     );
     $("#keyboxes").append(y);
-//     $("#keyboxes button").click(onExchangeKey);
+  }
+  
+  function getDelimiter() {
+    return($("#delimiter").val());
   }
 
 /*############################
@@ -109,10 +109,84 @@ Ajax helpers
   }
 
 /*############################
-Ajax Event hanlers
+Converter
 ############################*/
 
-  /* this handler is dynamically attached at addKey */
+  function makeJsonOneRowHash(data, first) {
+    var json = ",{";
+    if(first) { json = "{"; }
+    var x = data.split(getDelimiter());
+    var keys = getKeys();
+    for(var k=0; k < keys.length; k++) {
+      if(x[k]) {
+        json += (',"' + keys[k] + '": "' + x[k] + '"');
+      }
+    }
+    json += "}\n";
+    return(json);
+  }
+  
+  function makeJsonRowsArray(data) {
+    var json = "";
+    json += ("[");
+    for(var r=0; r < data.length; r++) {
+      if(data[r].trim().length == 0) { continue; }
+      json += makeJsonOneRowHash(data[r], r == 0);
+    }
+    json += "]\n";
+    return(json);
+  }
+  
+  function delimToJson(delim) {
+    var data = delim.split("\n");
+    return(makeJsonRowsArray(data));
+  }
+  
+  function delimFromJson(json) {
+    var delim = "";
+    var result = "";
+    try {
+      result = JSON.parse(json);
+    }
+    catch(err) {
+      return(err.message);
+    }
+    //delim = JSON.stringify(result);
+    var keys = {};
+    for(var i=0; i < result.length; i++) {
+      for(var key in result[i]) {
+        keys[key] = true;
+      }
+    }
+    //delim = JSON.stringify(keys);
+    for(var i=0; i < result.length; i++) {
+      var first = true;
+      for(var key in keys) {
+        var x = result[i][key];
+        if(first) {
+          first = false;
+        } else {
+          delim += ', '
+        }
+        if(x) {
+          //delim += '"'
+          delim += x;
+          //delim += '"'
+        }
+      }
+      delim += "\n"
+    }
+    //var result = $.parseJSON(json);
+    //$.each(result, function(i,r){
+    //});
+    return(delim);
+  }
+
+/*############################
+Event hanlers
+############################*/
+
+  /* this handler is dynamically attached after addKey */
   function onExchangeKey() {
     var b = $(this).prev();
     var a = $(this).next();
@@ -121,15 +195,33 @@ Ajax Event hanlers
     a.val(swap);
   }
   
- // mutaion ‚ðŽg‚¤I function
+  /* watch new key insert */
+  var watchAddKey;
   
-//   $("#keyboxes button").ready(function(){
-//     $(this).click(console.log("hoge"));
-//   });
+  function enableWatchAddKey(start) {
+    if(start) {
+      watchAddKey = new MutationObserver(function(mutations){
+        mutations.forEach(function(mutation){
+          var nodes = mutation.addedNodes;
+          for(var i=0; i < nodes.length; i++) {
+            if(nodes[i].tagName.toUpperCase() != "BUTTON") { continue; }
+            nodes[i].addEventListener("click", onExchangeKey);
+          }
+        });
+      });
+      watchAddKey.observe(
+        document.getElementById("keyboxes"), {childList: true}
+      );
+    }
+    else {
+      watchAddKey.disconnect();
+    }
+  }
   
   $("#addkey").click(function(){
     addKey(1);
   });
+  enableWatchAddKey(true);
 
 /*############################
 Main
