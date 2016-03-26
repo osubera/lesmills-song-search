@@ -34,13 +34,14 @@ DOM helpers
     );
   }
   
-  function addKey(n) {
+  function addKey(n, val) {
+    if(!val) { val = new Array(n); }
     var x = [];
     var y = "";
     var ex = makeHtmlButtonExchangeKey();
     if(countKey() > 0) { y = ex }
-    for(var i=0; i<n; i++) {
-      x.push(makeHtmlInputKey());
+    for(var i=0; i < n; i++) {
+      x.push(makeHtmlInputKey(val[i]));
     }
     y += x.join(ex);
     $("#keyboxes").append(y);
@@ -58,8 +59,9 @@ HTML helpers
     return('<button type="button">' + txt.exchangekey + '</button>');
   }
   
-  function makeHtmlInputKey() {
-    return('<input type="text" />');
+  function makeHtmlInputKey(val) {
+    if(!val) { val = ""; }
+    return('<input type="text" value="' + val + '"/>');
   }
 
 /*############################
@@ -142,8 +144,57 @@ Converter
     return(makeJsonRowsArray(data));
   }
   
-  function delimFromJson(json) {
+  function makeUnityKeys(data) {
+    var keys = {};
+    for(var i=0; i < data.length; i++) {
+      for(var key in data[i]) {
+        keys[key] = true;
+      }
+    }
+    return(keys);
+  }
+  
+  function showKeys(keys) {
+    var oldLength = countKey();
+    var newLength = keys.length;
+    var lengthen = newLength -oldLength;
+    if(lengthen < 0) {
+       keys.push(new Array(-lengthen)); 
+     }
+    $("#keyboxes input").val(keys);
+    if(lengthen >0) {
+      keys.splice(0, oldLength);
+      addKey(lengthen, keys); 
+    }
+  }
+  
+  function makeDelimOneRow(data, keys) {
     var delim = "";
+    var d = getDelimiter();
+    var first = true;
+    for(var key in keys) {
+      if(first) { first = false; }
+      else { delim += d; }
+      var x = data[key];
+      if(x) {
+        delim += x;
+      }
+    }
+    delim += "\n"
+    return(delim);
+  }
+  
+  function makeDelimRows(data) {
+    var delim = "";
+    var keys = makeUnityKeys(data);
+    showKeys(Object.keys(keys));
+    for(var r=0; r < data.length; r++) {
+      delim += makeDelimOneRow(data[r], keys);
+    }
+    return(delim);
+  }
+  
+  function delimFromJson(json) {
     var result = "";
     try {
       result = JSON.parse(json);
@@ -151,35 +202,7 @@ Converter
     catch(err) {
       return(err.message);
     }
-    //delim = JSON.stringify(result);
-    var keys = {};
-    for(var i=0; i < result.length; i++) {
-      for(var key in result[i]) {
-        keys[key] = true;
-      }
-    }
-    //delim = JSON.stringify(keys);
-    for(var i=0; i < result.length; i++) {
-      var first = true;
-      for(var key in keys) {
-        var x = result[i][key];
-        if(first) {
-          first = false;
-        } else {
-          delim += ', '
-        }
-        if(x) {
-          //delim += '"'
-          delim += x;
-          //delim += '"'
-        }
-      }
-      delim += "\n"
-    }
-    //var result = $.parseJSON(json);
-    //$.each(result, function(i,r){
-    //});
-    return(delim);
+    return(makeDelimRows(result));
   }
 
 /*############################
@@ -218,10 +241,20 @@ Event hanlers
     }
   }
   
+  enableWatchAddKey(true);
+  
   $("#addkey").click(function(){
     addKey(1);
   });
-  enableWatchAddKey(true);
+  
+  $("#tojson").click(function(){
+    $("#json").val(delimToJson($("#csv").val()));
+  });
+
+  $("#fromjson").click(function(){
+    $("#csv").val(delimFromJson($("#json").val()));
+  });
+
 
 /*############################
 Main
