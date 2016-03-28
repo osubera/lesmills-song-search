@@ -1,6 +1,18 @@
 // Json Builder
 // https://github.com/osubera/lesmills-song-search
 
+/* TODO
+カンマの先頭or最後判定をやめて、配列.joinにする。
+エスケープ
+delimiterを、文字と正規表現にできる？
+undo機能とundoボタンのdisable制御
+メッセージの埋め込み
+変換タイミングで、キーを左寄せする
+jsonのインデント
+キーとcsvの初期値
+
+*/
+
 $(document).ready(function(){
 
 /*############################
