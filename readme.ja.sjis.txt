@@ -7,8 +7,8 @@
 * ju4.css
 * thema フォルダ
 * json フォルダ
-
 * iPad フォルダ
+* util フォルダ
 * jquery-2.2.1.min.js
 
 json フォルダに、データを格納している。
@@ -200,10 +200,10 @@ index-*.txt という感じのファイル名。
 全角 ’が無難。
 
 Shift_JIS なので、Unicode 拡張文字は使えない。
-
 一番最後のデータの後ろだけ、カンマ , が無いので注意する。
-
 中括弧 {} と大括弧 [] を間違えないよう注意する。
+
+util フォルダの json-builder.html を使うと、csv 形式を json 形式に変換できる。
 
 == プログラムファイル ==
 
@@ -243,6 +243,12 @@ ju4.css には、基本的な画面設定が入っている。
 ここの設定を変えたい場合は、
 ju4.css を直接変えずに、 thema.css で上書きした方がいい。
 
+== util ==
+
+=== json-builder.html ==
+
+csv ⇔ json 変換を行うツール。
+
 == Android 対応 ==
 
 Android 版 Firefox に対応している。
@@ -270,57 +276,34 @@ open -a "/Applications/Google Chrome.app" song.html --args -allow-file-access-fr
 
 == iOS, iPad, iPhone 対応 ==
 
-
 === iOS 上の Firefox, Safari ===
 
-
 Firefox, Safari でローカルファイルを開く方法がわからない。
-
 どうやら、開けない仕様。
 今のところ無理。
 
-
 === iOS 上の Html Viewer ===
-
-
 
 次の制限があるものの、java script が動く。
 
-
-
 # 外部 script 、外部 css は読まない。
-
 # script から、外部ファイル (json) は読まない。
-
 # コールバックのような非同期処理が非常に遅い。
-
-
 
 html, css, javascript, json を 1 ファイルに統合し、
 jquery を使わない処理に書きなおした。
-
 Dropbox などのクラウド経由で iPad に投げれば動く。
 
-
 iPad フォルダに、各パーツと統合スクリプトがあるので、
-
 json フォルダのデータを更新する都度、統合スクリプトを動かして、
 ファイルを再構築する。
 
-
-
 Mac, Linux 用: ./make.sh > song.ipad.html
-
-Windows 用: 予定 ./make.win.ps1
-
-
+Windows 用:  ./make.win.ps1
 
 == IE 対応 ==
 
-
-
 iOS 用の統合ファイルは、IE でも動作する。
-
 
 == 配布元 ==
 
@@ -332,5 +315,4 @@ https://github.com/osubera/lesmills-song-search
 ざっくり言えば、リスペクトあれば好きに改変・再配布してよい。
 データは自分で作るのが前提。
 jquery は、jquery 配布元のライセンスによる。
-
 
