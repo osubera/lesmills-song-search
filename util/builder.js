@@ -2,9 +2,9 @@
 // https://github.com/osubera/lesmills-song-search
 
 /* TODO
-カンマの先頭or最後判定をやめて、配列.joinにする。
+done. カンマの先頭or最後判定をやめて、配列.joinにする。
 エスケープ
-delimiterを、文字と正規表現にできる？
+delimiterを、文字と正規表現にできる？ 逆変換ができないか。delimiterが決まらなくて困る。
 undo機能とundoボタンのdisable制御
 メッセージの埋め込み
 変換タイミングで、キーを左寄せする
@@ -127,34 +127,47 @@ Converter
 ############################*/
 
   function makeJsonOneRowHash(data, notlast) {
-    var json = "{";
+//    var json = "{";
     var x = data.split(getDelimiter());
-    var keys = getKeys();
-    var first = true;
-    var d = "";
-    for(var k=0; k < keys.length; k++) {
-      if(x[k]) {
-        if(first) { first = false; }
-        else { d = ","; }
-        json += (d + '"' + keys[k] + '": "' + x[k] + '"');
-      }
-    }
-    json += "},";
+//    var keys = getKeys();
+//    var first = true;
+//    var d = "";
+//    json +=
+    var keyval = getKeys().map(function(key, index){
+      var v = x[index];
+      if(v) { return('"' + key + '": "' + v + '"'); }
+      else { return(null); }
+     }).filter(function(element){
+      return(element);
+     });
+//     for(var k=0; k < keys.length; k++) {
+//       if(x[k]) {
+//         if(first) { first = false; }
+//         else { d = ","; }
+//         json += (d + '"' + keys[k] + '": "' + x[k] + '"');
+//       }
+//     }
+    var json = "{" + keyval.join(",") +  "}";
     return(json);
   }
   
   function makeJsonRowsArray(data) {
-    var json = "";
-    json += ("[");
-    for(var r=0; r < data.length; r++) {
-      if(data[r].trim().length == 0) { continue; }
-      json += "\n";
-      json += makeJsonOneRowHash(data[r]);
-    }
+//     var json = "";
+//     json += ("[");
+    var rows = data.map(function(row){
+      if(row.trim().length == 0) { return(null); }
+      else { return(makeJsonOneRowHash(row)); }
+    });
+    var json = "[\n" + rows.join(",\n") + "\n]\n";
+//     for(var r=0; r < data.length; r++) {
+//       if(data[r].trim().length == 0) { continue; }
+//       json += "\n";
+//       json += makeJsonOneRowHash(data[r]);
+//     }
     /* because the text includes blank lines, the last record is unknown. 
       so, the last comma is to be deleted at this point */
-    json = json.slice(0, -1);
-    json += "\n]\n";
+//     json = json.slice(0, -1);
+//     json += "\n]\n";
     return(json);
   }
   
@@ -190,28 +203,45 @@ Converter
   }
   
   function makeDelimOneRow(data, keys) {
-    var delim = "";
+//     var delim = "";
     var d = getDelimiter();
-    var first = true;
+//     var row = keys.map(function(key){
+//       var x = data[key];
+//       if(x) { return(x); }
+//       else { return(null); }
+//     }).filter(function(element){
+//       return(element);
+//     });
+    var row = [];
     for(var key in keys) {
-      if(first) { first = false; }
-      else { delim += d; }
       var x = data[key];
-      if(x) {
-        delim += x;
-      }
+      row.push(x);
     }
-    delim += "\n"
-    return(delim);
+//     var first = true;
+//     for(var key in keys) {
+//       if(first) { first = false; }
+//       else { delim += d; }
+//       var x = data[key];
+//       if(x) {
+//         delim += x;
+//       }
+//     }
+    var delim = row.join(d);
+//    delim += "\n"
+  return(delim);
   }
   
   function makeDelimRows(data) {
-    var delim = "";
+//     var delim = "";
     var keys = makeUnityKeys(data);
     showKeys(Object.keys(keys));
-    for(var r=0; r < data.length; r++) {
-      delim += makeDelimOneRow(data[r], keys);
-    }
+    var rows = data.map(function(row){
+      return(makeDelimOneRow(row, keys));
+    });
+    var delim = rows.join("\n") + "\n";
+//     for(var r=0; r < data.length; r++) {
+//       delim += makeDelimOneRow(data[r], keys);
+//     }
     return(delim);
   }
   
