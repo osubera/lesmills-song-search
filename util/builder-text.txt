@@ -2,7 +2,14 @@
   "nofiles": "ファイルが見つかりません。",
   "invalid": "ファイルが壊れています。",
   "exchangekey": "⇔",
-  "ui": {
+  "initkeys": ["order", "song", "artist"],
+  "zenquot": "”",
+  "zenyen": "￥",
+  "val": {
+    "delimiter": ",",
+    "csv": "1曲目,"
+  },
+  "text": {
     "title": "json 作ります。",
     "undo": "元に戻す",
     "keylist": "キー",

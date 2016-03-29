@@ -2,14 +2,17 @@
 // https://github.com/osubera/lesmills-song-search
 
 /* TODO
-done. カンマの先頭or最後判定をやめて、配列.joinにする。
-エスケープ
 delimiterを、文字と正規表現にできる？ 逆変換ができないか。delimiterが決まらなくて困る。
+delimiter文字数表示。
 undo機能とundoボタンのdisable制御
-メッセージの埋め込み
 変換タイミングで、キーを左寄せする
-jsonのインデント
-キーとcsvの初期値
+jsonから変換で、キー列に入る値がおかしい。キー1つだけのときとか。
+キーなしのときはarray
+done. jsonのインデント
+done. キーとcsvの初期値
+done. カンマの先頭or最後判定をやめて、配列.joinにする。
+done. エスケープ
+done. メッセージの埋め込み
 
 */
 
@@ -28,8 +31,8 @@ DOM helpers
   }
   
   // initialize key boxes
-  function setupKeyBoxes(n) {
-    addKey(n);
+  function setupKeyBoxes(n, val) {
+    addKey(n, val);
   }
   
   function countKey() {
@@ -62,6 +65,22 @@ DOM helpers
   function getDelimiter() {
     return($("#delimiter").val());
   }
+  
+  function loadDefaultVals() {
+    $.each(txt.val, function(key, val){
+      $("#" + key).val(val);
+    });
+  }
+  
+  function loadDefaultTexts() {
+    $.each(txt.text, function(key, val){
+      $("#" + key).text(val);
+    });
+  }
+  
+  function loadInstruction() {
+    $("#instruction").html(makeHtmlList(txt.instruction));
+  }
 
 /*############################
 HTML helpers
@@ -74,6 +93,12 @@ HTML helpers
   function makeHtmlInputKey(val) {
     if(!val) { val = ""; }
     return('<input type="text" value="' + val + '"/>');
+  }
+  
+  function makeHtmlList(val) {
+    return(val.map(function(v){
+      return('<li>' + v + '</li>');
+    }).join(""));
   }
 
 /*############################
@@ -102,6 +127,19 @@ Variables, Constants and helpers
       )
     );
   }
+  
+  // json strings
+  var arrayBegin = "[\n";
+  var arrayEnd = "\n]\n";
+  var hashBegin = " ".repeat(2) + "{\n" + " ".repeat(4);
+  var hashEnd = "\n" + " ".repeat(2) + "}";
+  var hashColon = '": "';
+  var hashQuot = '"';
+  var colDelimiter = ",\n" + " ".repeat(4);
+  var rowDelimiter = ",\n";
+  
+  // csv strings
+  var delimRowSplitter = "\n";
 
 /*############################
 Ajax helpers
@@ -126,53 +164,62 @@ Ajax helpers
 Converter
 ############################*/
 
+  function escapeSpecialChars(x) {
+    switch($('input[name=escyen]:checked').val()) {
+      case "zen":
+        x = x.replace('\\',txt.zenyen);
+        break;
+      case "esc":
+        x = x.replace('\\','\\\\');
+        break;
+      case "del":
+        x = x.replace('\\','');
+        break;
+      default: /* case nop */
+        break;
+    }
+    switch($('input[name=escquote]:checked').val()) {
+      case "zen":
+        x = x.replace('"',txt.zenquot);
+        break;
+      case "esc":
+        x = x.replace('"','\\"');
+        break;
+      case "del":
+        x = x.replace('"','');
+        break;
+      default: /* case nop */
+        break;
+    }
+    return(x);
+  }
+  
   function makeJsonOneRowHash(data, notlast) {
-//    var json = "{";
     var x = data.split(getDelimiter());
-//    var keys = getKeys();
-//    var first = true;
-//    var d = "";
-//    json +=
     var keyval = getKeys().map(function(key, index){
       var v = x[index];
-      if(v) { return('"' + key + '": "' + v + '"'); }
+      if(v) { return(hashQuot + key + hashColon + escapeSpecialChars(v) + hashQuot); }
       else { return(null); }
      }).filter(function(element){
       return(element);
      });
-//     for(var k=0; k < keys.length; k++) {
-//       if(x[k]) {
-//         if(first) { first = false; }
-//         else { d = ","; }
-//         json += (d + '"' + keys[k] + '": "' + x[k] + '"');
-//       }
-//     }
-    var json = "{" + keyval.join(",") +  "}";
+    var json = hashBegin + keyval.join(colDelimiter) +  hashEnd;
     return(json);
   }
   
   function makeJsonRowsArray(data) {
-//     var json = "";
-//     json += ("[");
     var rows = data.map(function(row){
       if(row.trim().length == 0) { return(null); }
       else { return(makeJsonOneRowHash(row)); }
+    }).filter(function(element){
+      return(element);
     });
-    var json = "[\n" + rows.join(",\n") + "\n]\n";
-//     for(var r=0; r < data.length; r++) {
-//       if(data[r].trim().length == 0) { continue; }
-//       json += "\n";
-//       json += makeJsonOneRowHash(data[r]);
-//     }
-    /* because the text includes blank lines, the last record is unknown. 
-      so, the last comma is to be deleted at this point */
-//     json = json.slice(0, -1);
-//     json += "\n]\n";
+    var json = arrayBegin + rows.join(rowDelimiter) + arrayEnd;
     return(json);
   }
   
   function delimToJson(delim) {
-    var data = delim.split("\n");
+    var data = delim.split(delimRowSplitter);
     return(makeJsonRowsArray(data));
   }
   
@@ -203,45 +250,22 @@ Converter
   }
   
   function makeDelimOneRow(data, keys) {
-//     var delim = "";
-    var d = getDelimiter();
-//     var row = keys.map(function(key){
-//       var x = data[key];
-//       if(x) { return(x); }
-//       else { return(null); }
-//     }).filter(function(element){
-//       return(element);
-//     });
     var row = [];
     for(var key in keys) {
       var x = data[key];
       row.push(x);
     }
-//     var first = true;
-//     for(var key in keys) {
-//       if(first) { first = false; }
-//       else { delim += d; }
-//       var x = data[key];
-//       if(x) {
-//         delim += x;
-//       }
-//     }
-    var delim = row.join(d);
-//    delim += "\n"
-  return(delim);
+    var delim = row.join(getDelimiter());
+    return(delim);
   }
   
   function makeDelimRows(data) {
-//     var delim = "";
     var keys = makeUnityKeys(data);
     showKeys(Object.keys(keys));
     var rows = data.map(function(row){
       return(makeDelimOneRow(row, keys));
     });
-    var delim = rows.join("\n") + "\n";
-//     for(var r=0; r < data.length; r++) {
-//       delim += makeDelimOneRow(data[r], keys);
-//     }
+    var delim = rows.join(delimRowSplitter) + delimRowSplitter;
     return(delim);
   }
   
@@ -312,7 +336,10 @@ Main
 ############################*/
 
   $.when(loadTexts()).done(function(){
-    setupKeyBoxes(3);
+    setupKeyBoxes(3, txt.initkeys);
+    loadDefaultVals();
+    loadDefaultTexts();
+    loadInstruction();
   });
 
 });
