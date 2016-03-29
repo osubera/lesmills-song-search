@@ -13,10 +13,11 @@
 ### license files
 *LICENSE* text
 
-### unix sh
-*.sh text
-
 ### other projects
 jquery* text
 
+## text files that should keep Lf unchanged
+
+### unix sh
+*.sh text eol=lf
 
