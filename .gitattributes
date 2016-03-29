@@ -1,0 +1,22 @@
+# This project uses Shift-JIS CrLf files, basically.
+* text eol=crlf
+
+# The above will handle all files NOT found bellow
+#
+
+## text files that should be normalized (CrLf -> Lf)
+
+### git configs
+.gitattributes text
+.gitignore text
+
+### license files
+*LICENSE* text
+
+### unix sh
+*.sh text
+
+### other projects
+jquery* text
+
+
