@@ -60,6 +60,10 @@ fieldset {
 #error {
   color: crimson;
 }
+#delimcounter {
+  font-size: 1rem;
+  font-weight: normal;
+}
 footer {
   margin-top: 1rem;
   padding-right: 0.6rem;
@@ -90,6 +94,14 @@ section {
 
 h2 {
   width: 10%;
+}
+
+#undoinfo {
+  display:none;
+}
+
+#undoinfo, #remember {
+  width: 100%;
 }
 
 textarea {
@@ -131,6 +143,30 @@ textarea {
   
   .exec {
     display: inline;
+  }
+}
+
+/* for larger screen, such as full HD */
+@media only screen and (min-width: 1280px) {
+  #main {
+    display: flex;
+    justify-content: center;
+  }
+  
+  #jsonblock, #csvblock {
+    width: 50%;
+  }
+  
+  #csv {
+    height: 40rem;
+  }
+  
+  #json {
+    height: 50rem;
+  }
+  
+  #tojson, #fromjson {
+    transform: rotate(-90deg);
   }
 }
 
