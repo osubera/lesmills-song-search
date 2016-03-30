@@ -60,6 +60,10 @@ fieldset {
 #error {
   color: crimson;
 }
+#delimcounter {
+  font-size: 1rem;
+  font-weight: normal;
+}
 footer {
   margin-top: 1rem;
   padding-right: 0.6rem;
@@ -90,6 +94,14 @@ section {
 
 h2 {
   width: 10%;
+}
+
+#undoinfo {
+  display:none;
+}
+
+#undoinfo, #remember {
+  width: 100%;
 }
 
 textarea {

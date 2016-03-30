@@ -2,7 +2,7 @@
 // https://github.com/osubera/lesmills-song-search
 
 /* TODO
-大画面対応レイアウト
+done. 大画面対応レイアウト
 delimiterを、文字と正規表現にできる？ 逆変換ができないか。delimiterが決まらなくて困る。
 delimiter文字数表示。
 undo機能とundoボタンのdisable制御
