@@ -134,6 +134,30 @@ textarea {
   }
 }
 
+/* for larger screen, such as full HD */
+@media only screen and (min-width: 1280px) {
+  #main {
+    display: flex;
+    justify-content: center;
+  }
+  
+  #jsonblock, #csvblock {
+    width: 50%;
+  }
+  
+  #csv {
+    height: 40rem;
+  }
+  
+  #json {
+    height: 50rem;
+  }
+  
+  #tojson, #fromjson {
+    transform: rotate(-90deg);
+  }
+}
+
 /* for paper print */
 @media print {
   h1 {
