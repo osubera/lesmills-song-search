@@ -5,9 +5,9 @@
 delimiterを、文字と正規表現にできる？ 逆変換ができないか。delimiterが決まらなくて困る。
 delimiter文字数表示。
 undo機能とundoボタンのdisable制御
-変換タイミングで、キーを左寄せする
-jsonから変換で、キー列に入る値がおかしい。キー1つだけのときとか。
-キーなしのときはarray
+nop. 変換タイミングで、キーを左寄せする
+done. jsonから変換で、キー列に入る値がおかしい。キー1つだけのときとか。
+done. キーなしのときはarray
 done. jsonのインデント
 done. キーとcsvの初期値
 done. カンマの先頭or最後判定をやめて、配列.joinにする。
@@ -135,6 +135,7 @@ Variables, Constants and helpers
   var hashEnd = "\n" + " ".repeat(2) + "}";
   var hashColon = '": "';
   var hashQuot = '"';
+  var stringQuot = '"';
   var colDelimiter = ",\n" + " ".repeat(4);
   var rowDelimiter = ",\n";
   
@@ -167,26 +168,26 @@ Converter
   function escapeSpecialChars(x) {
     switch($('input[name=escyen]:checked').val()) {
       case "zen":
-        x = x.replace('\\',txt.zenyen);
+        x = x.replace(/\\/g,txt.zenyen);
         break;
       case "esc":
-        x = x.replace('\\','\\\\');
+        x = x.replace(/\\/g,'\\\\');
         break;
       case "del":
-        x = x.replace('\\','');
+        x = x.replace(/\\/g,'');
         break;
       default: /* case nop */
         break;
     }
     switch($('input[name=escquote]:checked').val()) {
       case "zen":
-        x = x.replace('"',txt.zenquot);
+        x = x.replace(/"/g,txt.zenquot);
         break;
       case "esc":
-        x = x.replace('"','\\"');
+        x = x.replace(/"/g,'\\"');
         break;
       case "del":
-        x = x.replace('"','');
+        x = x.replace(/"/g,'');
         break;
       default: /* case nop */
         break;
@@ -194,7 +195,12 @@ Converter
     return(x);
   }
   
-  function makeJsonOneRowHash(data, notlast) {
+  function makeJsonOneRowString(data) {
+    var json = stringQuot + escapeSpecialChars(data) + stringQuot;
+    return(json);
+  }
+  
+  function makeJsonOneRowHash(data) {
     var x = data.split(getDelimiter());
     var keyval = getKeys().map(function(key, index){
       var v = x[index];
@@ -207,10 +213,15 @@ Converter
     return(json);
   }
   
+  function makeJsonOneRow(data) {
+    if(getKeys().length == 0) { return(makeJsonOneRowString(data)); }
+    else { return(makeJsonOneRowHash(data)); }
+  }
+  
   function makeJsonRowsArray(data) {
     var rows = data.map(function(row){
       if(row.trim().length == 0) { return(null); }
-      else { return(makeJsonOneRowHash(row)); }
+      else { return(makeJsonOneRow(row)); }
     }).filter(function(element){
       return(element);
     });
@@ -226,6 +237,9 @@ Converter
   function makeUnityKeys(data) {
     var keys = {};
     for(var i=0; i < data.length; i++) {
+      if(typeof data[i] == "string") {
+        return([]);
+      }
       for(var key in data[i]) {
         keys[key] = true;
       }
@@ -237,8 +251,8 @@ Converter
     var oldLength = countKey();
     var newLength = keys.length;
     var lengthen = newLength -oldLength;
-    if(lengthen < 0) {
-       keys.push(new Array(-lengthen)); 
+    for(var i=lengthen; i < 0; i++) {
+      keys.push("");
     }
     $("#keyboxes input").each(function(i, element){
       element.value = keys[i];
@@ -251,6 +265,9 @@ Converter
   
   function makeDelimOneRow(data, keys) {
     var row = [];
+    if(typeof data == "string") {
+      row.push(data);
+    }
     for(var key in keys) {
       var x = data[key];
       row.push(x);
