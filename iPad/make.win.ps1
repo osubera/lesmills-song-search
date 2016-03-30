@@ -216,3 +216,9 @@ main $dir | Out-File -encoding default -filepath $target
 # 単純にリダイレクト > すると、unicode with bom になる。
 # out-file の -encoding default は、日本語winではsjisになる。
 # "shift_jis" を直接指定することはできない。
+
+if($error.count -gt 0) {
+  Write-Host "エラーあり。スクロールで確認。キーを押して、この画面を閉じる。"
+  $x = $host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+  Write-Host
+}
