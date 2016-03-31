@@ -12,8 +12,11 @@
   "text": {
     "title": "json 作ります。",
     "undo": "元に戻す",
+    "confirmundo": "上記の内容に戻す",
     "keylist": "キー",
     "addkey": "+",
+    "optionstring": "文字",
+    "optionregexp": "正規表現",
     "csvtitle": "区切り",
     "jsontitle": "JSON形式",
     "tojson": "↓",
