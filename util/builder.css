@@ -87,7 +87,7 @@ a:hover {
 
 /* flex box */
 section {
-  display:flex;
+  display: flex;
   justify-content: space-between;
   margin-bottom: 0.5rem;
 }
@@ -97,11 +97,15 @@ h2 {
 }
 
 #undoinfo {
-  display:none;
+  display: none;
 }
 
 #undoinfo, #remember {
   width: 100%;
+}
+
+#confirmundo {
+  font-size: 1rem;
 }
 
 textarea {

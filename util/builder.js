@@ -3,9 +3,9 @@
 
 /* TODO
 done. 大画面対応レイアウト
-delimiterを、文字と正規表現にできる？ 逆変換ができないか。delimiterが決まらなくて困る。
-delimiter文字数表示。
-undo機能とundoボタンのdisable制御
+done. delimiterを、文字と正規表現にできる？ 逆変換ができないか。delimiterが決まらなくて困る。
+done. delimiter文字数表示。
+done. undo機能とundoボタンのdisable制御
 json parsererrorのときにrow, colから、jsonの該当箇所を選択する？
 nop. 変換タイミングで、キーを左寄せする
 done. jsonから変換で、キー列に入る値がおかしい。キー1つだけのときとか。
@@ -68,6 +68,16 @@ DOM helpers
     return($("#delimiter").val());
   }
   
+  function getDelimiterEx() {
+    var d = getDelimiter();
+    if($("#regexp").val() == "regexp") {
+      return(new RegExp(d));
+    }
+    else { // sstring
+      return(d);
+    }
+  }
+  
   function loadDefaultVals() {
     $.each(txt.val, function(key, val){
       $("#" + key).val(val);
@@ -82,6 +92,42 @@ DOM helpers
   
   function loadInstruction() {
     $("#instruction").html(makeHtmlList(txt.instruction));
+  }
+  
+  function toggleUndoInfo() {
+    var x = $("#undoinfo");
+    if(x.css("display") == "none") {
+      x.fadeIn();
+    }
+    else {
+      x.fadeOut();
+    }
+  }
+  
+  function setDelimCounter() {
+    $("#delimcounter").text($("#delimiter").val().length);
+  }
+  
+  function remember(selector) {
+    $("#whose").text(selector);
+    $("#remember").val($(selector).val());
+    enableUndo();
+  }
+  
+  function undo() {
+    $($("#whose").text()).val($("#remember").val());
+    $("#remember").val("");
+    $("#whose").val("");
+    toggleUndoInfo();
+    disableUndo();
+  }
+  
+  function enableUndo() {
+    $("#undo").prop("disabled", false);
+  }
+  
+  function disableUndo() {
+    $("#undo").prop("disabled", true);
   }
 
 /*############################
@@ -203,7 +249,7 @@ Converter
   }
   
   function makeJsonOneRowHash(data) {
-    var x = data.split(getDelimiter());
+    var x = data.split(getDelimiterEx());
     var keyval = getKeys().map(function(key, index){
       var v = x[index];
       if(v) { return(hashQuot + key + hashColon + escapeSpecialChars(v) + hashQuot); }
@@ -294,6 +340,8 @@ Converter
       result = JSON.parse(json);
     }
     catch(err) {
+      $x = /line +(\d+) +column +(\d+)/.exec(err.message);
+      console.log($x);
       return(err.message);
     }
     return(makeDelimRows(result));
@@ -342,11 +390,25 @@ Event hanlers
   });
   
   $("#tojson").click(function(){
+    remember("#json");
     $("#json").val(delimToJson($("#csv").val()));
   });
-
+  
   $("#fromjson").click(function(){
+    remember("#csv");
     $("#csv").val(delimFromJson($("#json").val()));
+  });
+  
+  $("#undo").click(function(){
+    toggleUndoInfo();
+  });
+  
+  $("#delimiter").change(function(){
+    setDelimCounter();
+  });
+  
+  $("#confirmundo").click(function(){
+    undo();
   });
 
 
@@ -359,6 +421,9 @@ Main
     loadDefaultVals();
     loadDefaultTexts();
     loadInstruction();
+    setDelimCounter();
   });
+  disableUndo();
+
 
 });
