@@ -47,6 +47,21 @@ textarea {
   width: 4rem;
 }
 
+#undo {
+  outline-color: #eee;
+  outline-width: 0.08rem;
+  outline-style: outset;
+  color: inherit;
+  text-shadow: none;
+}
+
+#undo.on {
+  outline-style: inset;
+  color: orange;
+  color: white;
+  text-shadow: 0.05rem 0.05rem 0.1rem red, 0 0 1.5rem yellow, 0 0 0.3rem orange;
+}
+
 fieldset {
   border-radius: 0.4rem;
 }
