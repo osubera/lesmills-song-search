@@ -1,24 +1,54 @@
-// Json Builder
+  // Json Builder
 // https://github.com/osubera/lesmills-song-search
 
-/* TODO
-done. 大画面対応レイアウト
-done. delimiterを、文字と正規表現にできる？ 逆変換ができないか。delimiterが決まらなくて困る。
-done. delimiter文字数表示。
-done. undo機能とundoボタンのdisable制御
-json parsererrorのときにrow, colから、jsonの該当箇所を選択する？
-nop. 変換タイミングで、キーを左寄せする
-done. jsonから変換で、キー列に入る値がおかしい。キー1つだけのときとか。
-done. キーなしのときはarray
-done. jsonのインデント
-done. キーとcsvの初期値
-done. カンマの先頭or最後判定をやめて、配列.joinにする。
-done. エスケープ
-done. メッセージの埋め込み
-
-*/
+/*############################
+Jquery Select Text Range
+thanks to Mark Bayazit for this useful function
+http://programanddesign.com/js/jquery-select-text-range/
+############################*/
+$.fn.selectRange = function(start, end) {
+    return this.each(function() {
+        if(this.setSelectionRange) {
+            this.focus();
+            this.setSelectionRange(start, end);
+        } else if(this.createTextRange) {
+            var range = this.createTextRange();
+            range.collapse(true);
+            range.moveEnd('character', end);
+            range.moveStart('character', start);
+            range.select();
+        }
+    });
+};
 
 $(document).ready(function(){
+
+/*############################
+Calculator
+############################*/
+
+  function positionByRowCol(text, row, col) {
+    // both row and col start at 1, while position starts at 0.
+    var x = text.split("\n");
+    var pos = col - 1;
+    
+    if(row > x.length) {
+      pos = text.length;
+      console.log("out of Row range");
+    }
+    else {
+      for(var i=0; i < row - 1; i++) {
+        pos += (x[i].length + 1);
+      }
+    }
+    
+    if(pos > text.length) {
+      pos = text.length;
+      console.log("out of Column range");
+    }
+  
+    return(pos);
+  }
 
 /*############################
 DOM helpers
@@ -103,6 +133,9 @@ DOM helpers
       x.fadeOut();
     }
   }
+  function toggleUndoSwitch() {
+    $("#undo").toggleClass("on");
+  }
   
   function setDelimCounter() {
     $("#delimcounter").text($("#delimiter").val().length);
@@ -119,6 +152,7 @@ DOM helpers
     $("#remember").val("");
     $("#whose").val("");
     toggleUndoInfo();
+    toggleUndoSwitch();
     disableUndo();
   }
   
@@ -340,9 +374,13 @@ Converter
       result = JSON.parse(json);
     }
     catch(err) {
-      $x = /line +(\d+) +column +(\d+)/.exec(err.message);
-      console.log($x);
-      return(err.message);
+      var e=err.message;
+      var x = /line +(\d+) +column +(\d+)/.exec(e);
+      if(x) {
+        var position = positionByRowCol($("#json").val(), x[1], x[2]);
+        $("#json").selectRange(position, position);
+    }
+      return(e);
     }
     return(makeDelimRows(result));
   }
@@ -400,10 +438,11 @@ Event hanlers
   });
   
   $("#undo").click(function(){
+    toggleUndoSwitch();
     toggleUndoInfo();
   });
   
-  $("#delimiter").change(function(){
+  $("#delimiter").on("change keyup paste",function(){
     setDelimCounter();
   });
   
